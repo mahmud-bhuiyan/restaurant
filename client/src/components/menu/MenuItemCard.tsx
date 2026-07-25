@@ -1,5 +1,7 @@
 import type { MenuItem } from "../../types/menu";
+import { useCartStore } from "../../store/cartStore";
 import Badge from "../ui/Badge";
+import Button from "../ui/Button";
 import { Card, CardContent, CardImage } from "../ui/Card";
 import { cn } from "../../lib/cn";
 
@@ -9,6 +11,8 @@ type MenuItemCardProps = {
 };
 
 export default function MenuItemCard({ item, className }: MenuItemCardProps) {
+  const addItem = useCartStore((s) => s.addItem);
+
   return (
     <Card hover className={cn(!item.isAvailable && "opacity-75", className)}>
       {item.imageUrl && <CardImage src={item.imageUrl} alt={item.name} />}
@@ -41,6 +45,15 @@ export default function MenuItemCard({ item, className }: MenuItemCardProps) {
               </Badge>
             ))}
           </div>
+        )}
+        {item.isAvailable && (
+          <Button
+            size="sm"
+            className="mt-4 w-full"
+            onClick={() => addItem(item)}
+          >
+            Add to Cart
+          </Button>
         )}
       </CardContent>
     </Card>

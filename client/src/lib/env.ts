@@ -1,10 +1,12 @@
+export const API_VERSION = "v1";
+
 /**
- * API base URL for fetch calls.
- * - Development (empty): uses `/api` → Vite proxy → localhost:5000
- * - Production: set VITE_API_URL to your hosted API origin
+ * Base URL for fetch calls (includes version prefix).
+ * - Dev with empty VITE_API_URL: `/api/v1` → Vite proxy → server
+ * - Production: `https://your-api.com/api/v1`
  */
 export function getApiBaseUrl(): string {
   const configured = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "");
-  if (configured) return `${configured}/api`;
-  return "/api";
+  if (configured) return `${configured}/api/${API_VERSION}`;
+  return `/api/${API_VERSION}`;
 }

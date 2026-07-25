@@ -21,7 +21,7 @@ export default function CTASection() {
             to secure your spot.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link to="/contact">
+            <Link to="/reservations">
               <Button size="lg">Make a Reservation</Button>
             </Link>
             <Link to="/menu">

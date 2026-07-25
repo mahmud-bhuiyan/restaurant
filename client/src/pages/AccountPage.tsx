@@ -1,11 +1,18 @@
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import OrderStatusBadge from "../components/orders/OrderStatusBadge";
 import PublicLayout from "../components/layout/PublicLayout";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
 import Input from "../components/ui/Input";
 import { useAuth } from "../context/AuthContext";
+import { fetchMyOrders } from "../lib/orderApi";
+import { fetchMyReservations } from "../lib/reservationApi";
+import type { Order } from "../types/order";
+import type { Reservation } from "../types/reservation";
+import ReservationStatusBadge from "../components/reservations/ReservationStatusBadge";
 
 export default function AccountPage() {
   const { user, updateProfile, logout } = useAuth();
@@ -17,6 +24,24 @@ export default function AccountPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [reservationsLoading, setReservationsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMyOrders()
+      .then((data) => setOrders(data.orders))
+      .catch(() => setOrders([]))
+      .finally(() => setOrdersLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetchMyReservations()
+      .then((data) => setReservations(data.reservations))
+      .catch(() => setReservations([]))
+      .finally(() => setReservationsLoading(false));
+  }, []);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -120,20 +145,77 @@ export default function AccountPage() {
           <Card>
             <CardContent>
               <h2 className="font-display text-xl text-white">Order History</h2>
-              <p className="mt-3 text-sm text-gray-500">
-                No orders yet. Browse the menu and place your first order once
-                ordering is live in Module 5.
-              </p>
+              {ordersLoading && (
+                <p className="mt-3 text-sm text-gray-500">Loading orders…</p>
+              )}
+              {!ordersLoading && orders.length === 0 && (
+                <p className="mt-3 text-sm text-gray-500">
+                  No orders yet.{" "}
+                  <Link to="/menu" className="text-gold hover:underline">
+                    Browse the menu
+                  </Link>{" "}
+                  to place your first order.
+                </p>
+              )}
+              {!ordersLoading && orders.length > 0 && (
+                <ul className="mt-4 space-y-3">
+                  {orders.map((order) => (
+                    <li
+                      key={order.id}
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-white/5 p-3"
+                    >
+                      <div>
+                        <p className="text-sm text-white">
+                          #{order.id.slice(-8).toUpperCase()} · $
+                          {order.total.toFixed(2)}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(order.createdAt).toLocaleDateString()} ·{" "}
+                          {order.orderType === "DELIVERY" ? "Delivery" : "Pickup"}
+                        </p>
+                      </div>
+                      <OrderStatusBadge status={order.status} />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </CardContent>
           </Card>
 
           <Card>
             <CardContent>
               <h2 className="font-display text-xl text-white">Reservations</h2>
-              <p className="mt-3 text-sm text-gray-500">
-                No reservations linked to your account yet. Table booking will
-                be available in Module 6.
-              </p>
+              {reservationsLoading && (
+                <p className="mt-3 text-sm text-gray-500">Loading…</p>
+              )}
+              {!reservationsLoading && reservations.length === 0 && (
+                <p className="mt-3 text-sm text-gray-500">
+                  No reservations yet.{" "}
+                  <Link to="/reservations" className="text-gold hover:underline">
+                    Book a table
+                  </Link>
+                  .
+                </p>
+              )}
+              {!reservationsLoading && reservations.length > 0 && (
+                <ul className="mt-4 space-y-3">
+                  {reservations.map((r) => (
+                    <li
+                      key={r.id}
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-white/5 p-3"
+                    >
+                      <div>
+                        <p className="text-sm text-white">
+                          {new Date(`${r.date}T12:00:00`).toLocaleDateString()} ·{" "}
+                          party of {r.partySize}
+                        </p>
+                        <p className="text-xs text-gray-500">{r.time}</p>
+                      </div>
+                      <ReservationStatusBadge status={r.status} />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </CardContent>
           </Card>
         </div>

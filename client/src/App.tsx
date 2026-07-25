@@ -6,7 +6,9 @@ import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MenuPage from "./pages/MenuPage";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
+import ReservationPage from "./pages/ReservationPage";
 import SignupPage from "./pages/SignupPage";
 
 export default function App() {
@@ -17,6 +19,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/menu" element={<MenuPage />} />
+        <Route path="/reservations" element={<ReservationPage />} />
         <Route
           path="/account"
           element={
@@ -30,6 +33,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:id/confirmation"
+          element={
+            <ProtectedRoute>
+              <OrderConfirmationPage />
             </ProtectedRoute>
           }
         />
@@ -63,8 +74,8 @@ export default function App() {
           path="/contact"
           element={
             <PlaceholderPage
-              title="Contact & Reservations"
-              description="Contact form and table booking will be built in Module 6."
+              title="Contact"
+              description="Full contact page will be built in Module 8. Book a table at /reservations."
             />
           }
         />

@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { navLinks, siteInfo } from "../../lib/mockData";
 import { cn } from "../../lib/cn";
 import Button from "../ui/Button";
+import CartButton from "../cart/CartButton";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -48,6 +49,7 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-3 md:flex">
+          <CartButton />
           {user ? (
             <>
               {isAdmin && (
@@ -129,6 +131,11 @@ export default function Navbar() {
             ))}
           </ul>
           <div className="mt-6 flex flex-col gap-3">
+            <Link to={user ? "/checkout" : "/login"} state={user ? undefined : { from: "/checkout" }} onClick={() => setMobileOpen(false)}>
+              <Button variant="outline" className="w-full">
+                Cart
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Link to="/account" onClick={() => setMobileOpen(false)}>

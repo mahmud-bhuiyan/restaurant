@@ -23,7 +23,7 @@ restaurant/
 | Frontend | **React 18 + Vite + TypeScript** | SPA with React Router |
 | Styling | **Tailwind CSS** | Theme tokens in `tailwind.config` |
 | State (cart) | **Zustand** | Client-side cart before checkout |
-| Backend | **Express + TypeScript** | REST API under `/api` |
+| Backend | **Express + TypeScript** | REST API under `/api/v1` (versioned) |
 | Database | **MongoDB** (local or Atlas) | Document model via **Mongoose** |
 | Auth | **JWT** (httpOnly cookie or Bearer) | bcrypt for passwords; `CUSTOMER` / `ADMIN` roles |
 | Image storage | **Cloudinary** or local `/uploads` for dev | Menu & gallery images |
@@ -67,9 +67,9 @@ restaurant/
 | 2 | Design System | **Done** |
 | 3 | Authentication | **Done** |
 | 4 | Menu Module | **Done** |
-| 5 | Ordering & Cart | **Next** |
-| 6 | Reservations | Pending |
-| 7 | Testimonials | Pending |
+| 5 | Ordering & Cart | **Done** |
+| 6 | Reservations | **Done** |
+| 7 | Testimonials | **Next** |
 | 8 | Gallery & Content Pages | Pending |
 | 9 | Admin Panel Shell | Pending |
 | 10 | Polish, SEO & Launch | Pending |
@@ -88,7 +88,8 @@ restaurant/
 ### Server
 - [x] Express + TypeScript scaffold
 - [x] Mongoose connection helper
-- [x] Health check route `GET /api/health`
+- [x] Health check route `GET /api/v1/health`
+- [x] API versioning — routes under `/api/v1`
 - [x] CORS + JSON middleware
 - [x] `server/.env.local` + `client/.env` (separate per deploy target)
 - [ ] Connect to MongoDB and verify health endpoint *(needs your Atlas/local URI)*
@@ -138,7 +139,7 @@ cd client && npm install && npm run dev
 **Seed admin user:**
 ```bash
 cd server && npm run seed:admin
-# Default: admin@epicureanhaven.com / Admin123!
+# Default: admin@gmail.com / User@123
 ```
 
 ---
@@ -146,7 +147,7 @@ cd server && npm run seed:admin
 ## Module 4 — Menu Module ✅ (complete)
 
 - [x] MenuCategory & MenuItem Mongoose models
-- [x] Public API: `GET /api/menu`, `GET /api/menu/featured`
+- [x] Public API: `GET /api/v1/menu`, `GET /api/v1/menu/featured`
 - [x] Admin CRUD: categories & items (availability, featured, image URL)
 - [x] Public `/menu` page with category filter + sold-out badges
 - [x] Admin `/admin/menu` management UI
@@ -160,20 +161,24 @@ cd server && npm run seed:menu
 
 ---
 
-## Module 5 — Ordering & Cart (next)
+## Module 5 — Ordering & Cart ✅ (complete)
 
-- Zustand cart; cart page/drawer
-- Checkout (auth required): delivery/pickup, address, COD
-- Order confirmation + optional email
-- Admin orders dashboard with status updates
+- [x] Zustand cart (persisted in localStorage)
+- [x] Add to cart from menu + navbar cart badge
+- [x] Checkout page: delivery/pickup, address, phone, notes, COD
+- [x] Order confirmation page
+- [x] Customer order history on account page
+- [x] Order model + API (`POST`, `GET /mine`, admin list, status update)
+- [x] Admin `/admin/orders` dashboard with status filter
 
 ---
 
-## Module 6 — Reservations
+## Module 6 — Reservations ✅ (complete)
 
-- Guest-friendly reservation form
-- Slot availability (max covers in SiteSettings)
-- Admin reservations dashboard
+- [x] Guest-friendly reservation form at `/reservations` (prefill when logged in)
+- [x] Slot availability with max covers per slot (SiteSettings, default 24)
+- [x] Customer reservation history on account page (when logged in)
+- [x] Admin `/admin/reservations` — filter by date/status, confirm/cancel
 
 ---
 
