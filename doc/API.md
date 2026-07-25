@@ -432,6 +432,83 @@ Statuses: `PENDING` · `CONFIRMED` · `CANCELLED`
 
 ---
 
+## Testimonials
+
+Guest-friendly submissions — no login required. Only **APPROVED** reviews appear publicly.
+
+### `GET /api/v1/testimonials`
+
+Public list of approved testimonials.
+
+**Query:** `?limit=3` (optional, for homepage preview)
+
+**Response `200`**
+```json
+{
+  "testimonials": [
+    {
+      "id": "...",
+      "name": "Sarah Mitchell",
+      "message": "An unforgettable evening…",
+      "rating": 5,
+      "status": "APPROVED",
+      "createdAt": "..."
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/v1/testimonials`
+
+Submit a review (starts as `PENDING`). **Auth:** optional.
+
+**Body**
+```json
+{
+  "name": "Sarah Mitchell",
+  "message": "An unforgettable evening. The wagyu was perfect.",
+  "rating": 5
+}
+```
+
+| Field | Notes |
+|-------|-------|
+| rating | Integer 1–5 |
+| message | Min 10 characters |
+
+**Response `201`** — `{ "testimonial": { ... }, "message": "Thank you! …" }`
+
+---
+
+### `GET /api/v1/testimonials/all`
+
+Moderation queue. **Auth:** admin.
+
+**Query:** `?status=PENDING`
+
+---
+
+### `PATCH /api/v1/testimonials/:id/status`
+
+Approve or reject. **Auth:** admin.
+
+**Body**
+```json
+{ "status": "APPROVED" }
+```
+
+Statuses: `PENDING` · `APPROVED` · `REJECTED`
+
+---
+
+### `DELETE /api/v1/testimonials/:id`
+
+Permanently delete. **Auth:** admin.
+
+---
+
 ## Seed Scripts
 
 ```bash
@@ -451,6 +528,7 @@ npm run seed:menu    # sample categories & dishes
 | 4 | `/api/v1/menu/*` |
 | 5 | `/api/v1/orders/*` |
 | 6 | `/api/v1/reservations/*` |
+| 7 | `/api/v1/testimonials/*` |
 
 ---
 
@@ -464,6 +542,7 @@ User/auth tests cover all endpoints in this document:
 | Auth routes (integration) | `server/tests/users/auth.routes.test.ts` | 10 |
 | Order routes (integration) | `server/tests/users/orders.routes.test.ts` | 5 |
 | Reservation routes (integration) | `server/tests/users/reservations.routes.test.ts` | 5 |
+| Testimonial routes (integration) | `server/tests/users/testimonials.routes.test.ts` | 5 |
 | API client | `client/tests/users/authApi.test.ts` | 3 |
 | AuthContext | `client/tests/users/authContext.test.tsx` | 3 |
 | Env helper | `client/tests/users/env.test.ts` | 3 |
