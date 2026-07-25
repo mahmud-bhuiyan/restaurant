@@ -1,6 +1,6 @@
 # Epicurean Haven 2.0
 
-Dynamic restaurant website with online ordering, reservations, testimonials, and admin panel.
+Dynamic restaurant website with online ordering, reservations, testimonials, gallery, and admin panel.
 
 **Stack:** MongoDB · Express · React (Vite) · Node.js
 
@@ -10,7 +10,7 @@ Dynamic restaurant website with online ordering, reservations, testimonials, and
 restaurant/
 ├── client/          React app (node_modules, tests, .env)
 ├── server/          Express API (node_modules, tests, .env.local)
-└── doc/             Project plans, API reference
+└── doc/             Plans, API reference, deploy guide
 ```
 
 Each app is **self-contained** — install and run from its own folder.
@@ -20,7 +20,7 @@ Each app is **self-contained** — install and run from its own folder.
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
+- MongoDB ([MongoDB Atlas](https://www.mongodb.com/atlas) recommended)
 
 ### 1. Server
 
@@ -44,57 +44,50 @@ npm run dev
 
 App runs at `http://localhost:5173`
 
-## Environment files (separate hosting)
+### 3. Seed data
 
-Client and server each have their own env — they are **not** shared.
+```bash
+cd server && npm run seed
+```
+
+Creates admin (`admin@gmail.com` / `User@123`), sample menu, and gallery images.
+
+## Environment files
 
 | File | Purpose | Committed? |
 |------|---------|------------|
 | `server/.env.example` | Server template | Yes |
-| `server/.env.local` | Server secrets (DB, ADMIN_JWT_SECRET, CORS, IMGBB) | No |
+| `server/.env.local` | Server secrets | No |
 | `client/.env.example` | Client template | Yes |
-| `client/.env` | Client config (`VITE_API_URL`) | No |
+| `client/.env` | `VITE_API_URL` | No |
 
-**Local dev**
-- `server/.env.local` → `CLIENT_URL=http://localhost:5173`
-- `client/.env` → `VITE_API_URL=` (empty, uses Vite proxy)
+**Local dev:** leave `VITE_API_URL` empty in `client/.env` to use the Vite proxy.
 
-**Separate production hosts**
-- `server/.env.local` → `CLIENT_URL=https://your-frontend.com`
-- `client/.env` → `VITE_API_URL=https://your-api.com`
+## Modules (all complete)
 
-Then build & deploy each folder independently.
+| # | Module | Status |
+|---|--------|--------|
+| 1 | Project Setup | Done |
+| 2 | Design System | Done |
+| 3 | Authentication | Done |
+| 4 | Menu | Done |
+| 5 | Ordering & Cart | Done |
+| 6 | Reservations | Done |
+| 7 | Testimonials | Done |
+| 8 | Gallery & Content | Done |
+| 9 | Admin Panel | Done |
+| 10 | Polish & Launch | Done |
 
-## Build plan
+See [doc/PROJECT_PLAN.md](./doc/PROJECT_PLAN.md) for details.
 
-See [doc/PROJECT_PLAN.md](./doc/PROJECT_PLAN.md) for the step-by-step module plan.
+## API & deploy
 
-| Module | Status |
-|--------|--------|
-| 1. Project Setup | Done |
-| 2. Design System | Done |
-| 3. Authentication | Done |
-| 4. Menu Module | Done |
-| 5. Ordering & Cart | Next |
-
-## API
-
-Full reference: [doc/API.md](./doc/API.md) — update this file whenever routes change.
-
-## Seed data
-
-```bash
-cd server && npm run seed:admin   # admin@gmail.com / User@123
-cd server && npm run seed:menu      # sample categories & dishes
-```
+- API reference: [doc/API.md](./doc/API.md)
+- Deployment: [doc/DEPLOY.md](./doc/DEPLOY.md)
 
 ## Tests
 
-Run from each app folder (uses that app's `node_modules`):
-
 ```bash
-cd server && npm test    # 22 tests — tests/users/
-cd client && npm test    # 12 tests — tests/users/
+cd server && npm test    # server integration tests
+cd client && npm test    # client unit tests
 ```
-
-See `server/tests/README.md` and `client/tests/README.md`.

@@ -8,6 +8,9 @@ import menuRoutes from "./routes/menu.js";
 import orderRoutes from "./routes/orders.js";
 import reservationRoutes from "./routes/reservations.js";
 import testimonialRoutes from "./routes/testimonials.js";
+import galleryRoutes from "./routes/gallery.js";
+import settingsRoutes from "./routes/settings.js";
+import adminRoutes from "./routes/admin.js";
 
 let dbReady = false;
 
@@ -43,6 +46,9 @@ export function createApp(): Express {
   app.use("/api/v1/orders", orderRoutes);
   app.use("/api/v1/reservations", reservationRoutes);
   app.use("/api/v1/testimonials", testimonialRoutes);
+  app.use("/api/v1/gallery", galleryRoutes);
+  app.use("/api/v1/settings", settingsRoutes);
+  app.use("/api/v1/admin", adminRoutes);
 
   return app;
 }

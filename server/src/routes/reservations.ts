@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticate, optionalAuth, requireAdmin } from "../middleware/auth.js";
+import { rateLimit } from "../middleware/rateLimit.js";
 import {
   ReservationError,
   createReservation,
@@ -41,17 +42,22 @@ router.get("/availability", async (req, res) => {
   }
 });
 
-router.post("/", optionalAuth, async (req, res) => {
-  try {
-    const reservation = await createReservation(
-      req.body,
-      req.user?.id,
-    );
-    res.status(201).json({ reservation: formatReservation(reservation) });
-  } catch (err) {
-    handleError(res, err, "Failed to create reservation");
-  }
-});
+router.post(
+  "/",
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }),
+  optionalAuth,
+  async (req, res) => {
+    try {
+      const reservation = await createReservation(
+        req.body,
+        req.user?.id,
+      );
+      res.status(201).json({ reservation: formatReservation(reservation) });
+    } catch (err) {
+      handleError(res, err, "Failed to create reservation");
+    }
+  },
+);
 
 router.get("/mine", authenticate, async (req, res) => {
   try {

@@ -1,13 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AboutPage from "./pages/AboutPage";
 import AccountPage from "./pages/AccountPage";
 import AdminPage from "./pages/AdminPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import ContactPage from "./pages/ContactPage";
+import GalleryPage from "./pages/GalleryPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MenuPage from "./pages/MenuPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
-import PlaceholderPage from "./pages/PlaceholderPage";
 import ReservationPage from "./pages/ReservationPage";
 import SignupPage from "./pages/SignupPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
@@ -53,34 +56,11 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/about"
-          element={
-            <PlaceholderPage
-              title="About Us"
-              description="Our full story and team page will be built in Module 8."
-            />
-          }
-        />
-        <Route
-          path="/gallery"
-          element={
-            <PlaceholderPage
-              title="Gallery"
-              description="Photo gallery from the database will be built in Module 8."
-            />
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <PlaceholderPage
-              title="Contact"
-              description="Full contact page will be built in Module 8. Book a table at /reservations."
-            />
-          }
-        />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/testimonials" element={<TestimonialsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

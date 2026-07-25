@@ -70,9 +70,9 @@ restaurant/
 | 5 | Ordering & Cart | **Done** |
 | 6 | Reservations | **Done** |
 | 7 | Testimonials | **Done** |
-| 8 | Gallery & Content Pages | **Next** |
-| 9 | Admin Panel Shell | Pending |
-| 10 | Polish, SEO & Launch | Pending |
+| 8 | Gallery & Content Pages | **Done** |
+| 9 | Admin Panel Shell | **Done** |
+| 10 | Polish, SEO & Launch | **Done** |
 
 ---
 
@@ -190,27 +190,38 @@ cd server && npm run seed:menu
 
 ---
 
-## Module 8 — Gallery & Content
+## Module 8 — Gallery & Content ✅ (complete)
 
-- Gallery from DB; admin upload/reorder
-- About + Contact pages (SiteSettings-driven where useful)
-
----
-
-## Module 9 — Admin Panel Shell
-
-- Sidebar layout: Dashboard, Menu, Orders, Reservations, Testimonials, Gallery, Settings
-- Dashboard stats; Site Settings editor
+- [x] GalleryImage model + public `/gallery` page
+- [x] Admin `/admin/gallery` — add, edit, delete, reorder (image URLs)
+- [x] SiteSettings extended — about, contact, footer content
+- [x] `/about` and `/contact` pages driven by settings API
+- [x] Homepage about/gallery previews + footer use live settings
+- [x] Admin `/admin/settings` — edit site content
+- [x] `npm run seed:gallery` sample images
 
 ---
 
-## Module 10 — Polish & Launch
+## Module 9 — Admin Panel Shell ✅ (complete)
 
-- Mobile responsive pass
-- SEO meta, favicon, sitemap
-- Loading/empty/error states
-- Rate limiting on public forms
-- Production deploy (client static + server on Render/Railway/Fly; MongoDB Atlas)
+- [x] Full sidebar — Dashboard, Menu, Orders, Reservations, Testimonials, Gallery, Settings
+- [x] Mobile-friendly collapsible admin sidebar
+- [x] Dashboard stats API — orders today, pending queues, 7-day revenue
+- [x] Site Settings editor — hours, social links, hero image, reservation capacity
+- [x] `npm run seed` runs all seed scripts
+
+---
+
+## Module 10 — Polish & Launch ✅ (complete)
+
+- [x] Per-page SEO via `PageMeta` component + default meta in `index.html`
+- [x] `robots.txt` and `sitemap.xml` in `client/public`
+- [x] 404 page for unknown routes
+- [x] Shared `LoadingState`, `EmptyState`, `ErrorState` UI components
+- [x] Rate limiting on reservation & testimonial submissions (429)
+- [x] Vercel deploy configs (`client/vercel.json`, `server/vercel.json`)
+- [x] [doc/DEPLOY.md](./DEPLOY.md) production guide
+- [x] README updated
 
 ---
 

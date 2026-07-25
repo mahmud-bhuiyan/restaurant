@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
+import PageMeta from "../components/seo/PageMeta";
 import PublicLayout from "../components/layout/PublicLayout";
+import EmptyState from "../components/ui/EmptyState";
+import ErrorState from "../components/ui/ErrorState";
+import LoadingState from "../components/ui/LoadingState";
 import MenuItemCard from "../components/menu/MenuItemCard";
 import Button from "../components/ui/Button";
 import PageHeader from "../components/ui/PageHeader";
@@ -33,6 +37,10 @@ export default function MenuPage() {
 
   return (
     <PublicLayout>
+      <PageMeta
+        title="Menu"
+        description="Browse our seasonal fine-dining menu. Order online for delivery or pickup."
+      />
       <div className="section-padding">
         <div className="mx-auto max-w-content">
           <PageHeader
@@ -41,13 +49,9 @@ export default function MenuPage() {
             description="Explore our curated dishes. Unavailable items are marked as sold out."
           />
 
-          {loading && (
-            <p className="mt-14 text-center text-gray-500">Loading menu…</p>
-          )}
+          {loading && <LoadingState message="Loading menu…" className="mt-14" />}
 
-          {error && (
-            <p className="mt-14 text-center text-red-400">{error}</p>
-          )}
+          {error && <ErrorState message={error} className="mt-14 text-center" />}
 
           {!loading && !error && (
             <>
@@ -72,9 +76,7 @@ export default function MenuPage() {
               </div>
 
               {filteredItems.length === 0 ? (
-                <p className="mt-14 text-center text-gray-500">
-                  No items in this category yet.
-                </p>
+                <EmptyState message="No items in this category yet." />
               ) : (
                 <div
                   className={cn(
