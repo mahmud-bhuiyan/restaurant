@@ -1,3 +1,4 @@
+import PageMeta, { SITE_NAME } from "../components/seo/PageMeta";
 import PublicLayout from "../components/layout/PublicLayout";
 import AboutSection from "../components/home/AboutSection";
 import CTASection from "../components/home/CTASection";
@@ -9,6 +10,10 @@ import TestimonialsPreviewSection from "../components/home/TestimonialsPreviewSe
 export default function HomePage() {
   return (
     <PublicLayout>
+      <PageMeta
+        title={SITE_NAME}
+        description="Fine dining with online ordering, table reservations, and seasonal menus at Epicurean Haven."
+      />
       <HeroSection />
       <FeaturedMenuSection />
       <AboutSection />

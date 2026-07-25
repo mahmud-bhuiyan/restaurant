@@ -509,12 +509,92 @@ Permanently delete. **Auth:** admin.
 
 ---
 
+## Gallery
+
+Images use URL strings (Cloudinary/local uploads can be wired later).
+
+### `GET /api/v1/gallery`
+
+Public gallery list, sorted by `sortOrder`.
+
+**Query:** `?limit=4` (optional)
+
+**Response `200`** — `{ "images": [{ "id", "imageUrl", "caption", "sortOrder" }] }`
+
+---
+
+### `POST /api/v1/gallery`
+
+Add image. **Auth:** admin.
+
+**Body:** `{ "imageUrl": "https://...", "caption": "...", "sortOrder": 0 }`
+
+---
+
+### `PATCH /api/v1/gallery/reorder`
+
+Reorder images. **Auth:** admin.
+
+**Body:** `{ "orderedIds": ["id1", "id2", ...] }`
+
+---
+
+### `PATCH /api/v1/gallery/:id` · `DELETE /api/v1/gallery/:id`
+
+Update or delete. **Auth:** admin.
+
+---
+
+## Site Settings
+
+Powers About, Contact, and footer content.
+
+### `GET /api/v1/settings`
+
+Public site content (no admin-only fields).
+
+---
+
+### `GET /api/v1/settings/admin` · `PATCH /api/v1/settings`
+
+Read/update all settings. **Auth:** admin.
+
+**Public fields:** `restaurantName`, `tagline`, `description`, `address`, `phone`, `email`, `openingHours`, `aboutTitle`, `aboutBody`, `aboutImage`, `socialLinks`
+
+---
+
+## Admin Dashboard
+
+### `GET /api/v1/admin/stats`
+
+Dashboard summary. **Auth:** admin.
+
+**Response `200`**
+```json
+{
+  "stats": {
+    "ordersToday": 3,
+    "pendingOrders": 2,
+    "pendingReservations": 1,
+    "pendingTestimonials": 4,
+    "weekRevenue": 428.5,
+    "weekOrderCount": 12,
+    "totalMenuItems": 18,
+    "galleryImages": 4
+  }
+}
+```
+
+---
+
 ## Seed Scripts
 
 ```bash
 cd server
+npm run seed         # all seeds (admin + menu + gallery)
 npm run seed:admin   # admin@gmail.com / User@123
 npm run seed:menu    # sample categories & dishes
+npm run seed:gallery # sample gallery photos
 ```
 
 ---
@@ -529,6 +609,8 @@ npm run seed:menu    # sample categories & dishes
 | 5 | `/api/v1/orders/*` |
 | 6 | `/api/v1/reservations/*` |
 | 7 | `/api/v1/testimonials/*` |
+| 8 | `/api/v1/gallery/*`, `/api/v1/settings/*` |
+| 9 | `GET /api/v1/admin/stats` |
 
 ---
 
@@ -543,6 +625,9 @@ User/auth tests cover all endpoints in this document:
 | Order routes (integration) | `server/tests/users/orders.routes.test.ts` | 5 |
 | Reservation routes (integration) | `server/tests/users/reservations.routes.test.ts` | 5 |
 | Testimonial routes (integration) | `server/tests/users/testimonials.routes.test.ts` | 5 |
+| Gallery routes (integration) | `server/tests/users/gallery.routes.test.ts` | 3 |
+| Settings routes (integration) | `server/tests/users/settings.routes.test.ts` | 2 |
+| Admin routes (integration) | `server/tests/users/admin.routes.test.ts` | 2 |
 | API client | `client/tests/users/authApi.test.ts` | 3 |
 | AuthContext | `client/tests/users/authContext.test.tsx` | 3 |
 | Env helper | `client/tests/users/env.test.ts` | 3 |

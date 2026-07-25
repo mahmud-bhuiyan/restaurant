@@ -9,6 +9,8 @@
     "start": "node dist/index.js",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "seed:menu": "tsx src/scripts/seedMenu.ts",
+    "seed:gallery": "tsx src/scripts/seedGallery.ts",
+    "seed": "npm run seed:admin && npm run seed:menu && npm run seed:gallery",
     "test": "vitest run",
     "test:watch": "vitest"
   },

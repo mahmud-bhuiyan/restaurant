@@ -1,17 +1,22 @@
 import { Link } from "react-router-dom";
-import { navLinks, siteInfo } from "../../lib/mockData";
+import { navLinks } from "../../lib/mockData";
+import { useSiteSettings } from "../../hooks/useSiteSettings";
 
 export default function Footer() {
+  const { settings } = useSiteSettings();
+
   return (
     <footer className="border-t border-white/5 bg-charcoal-dark">
       <div className="mx-auto grid max-w-content gap-12 px-6 py-16 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
-          <h3 className="font-display text-2xl text-white">{siteInfo.name}</h3>
+          <h3 className="font-display text-2xl text-white">
+            {settings.restaurantName}
+          </h3>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-gray-400">
-            {siteInfo.description}
+            {settings.description}
           </p>
           <div className="mt-6 flex gap-4">
-            {Object.entries(siteInfo.social).map(([name, url]) => (
+            {Object.entries(settings.socialLinks).map(([name, url]) => (
               <a
                 key={name}
                 href={url}
@@ -48,20 +53,20 @@ export default function Footer() {
             Visit Us
           </h4>
           <address className="space-y-2 text-sm not-italic text-gray-400">
-            <p>{siteInfo.address}</p>
+            <p>{settings.address}</p>
             <p>
-              <a href={`tel:${siteInfo.phone}`} className="hover:text-gold">
-                {siteInfo.phone}
+              <a href={`tel:${settings.phone}`} className="hover:text-gold">
+                {settings.phone}
               </a>
             </p>
             <p>
-              <a href={`mailto:${siteInfo.email}`} className="hover:text-gold">
-                {siteInfo.email}
+              <a href={`mailto:${settings.email}`} className="hover:text-gold">
+                {settings.email}
               </a>
             </p>
           </address>
           <div className="mt-4 space-y-1">
-            {siteInfo.hours.map((h) => (
+            {settings.openingHours.map((h) => (
               <p key={h.days} className="text-xs text-gray-500">
                 <span className="text-gray-400">{h.days}:</span> {h.time}
               </p>
@@ -71,7 +76,8 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/5 py-6 text-center text-xs text-gray-600">
-        © {new Date().getFullYear()} {siteInfo.name}. All rights reserved.
+        © {new Date().getFullYear()} {settings.restaurantName}. All rights
+        reserved.
       </div>
     </footer>
   );

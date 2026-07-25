@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticate, optionalAuth, requireAdmin } from "../middleware/auth.js";
+import { rateLimit } from "../middleware/rateLimit.js";
 import {
   TestimonialError,
   createTestimonial,
@@ -41,17 +42,22 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", optionalAuth, async (req, res) => {
-  try {
-    const testimonial = await createTestimonial(req.body, req.user?.id);
-    res.status(201).json({
-      testimonial: formatTestimonial(testimonial),
-      message: "Thank you! Your review will appear after moderation.",
-    });
-  } catch (err) {
-    handleError(res, err, "Failed to submit testimonial");
-  }
-});
+router.post(
+  "/",
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }),
+  optionalAuth,
+  async (req, res) => {
+    try {
+      const testimonial = await createTestimonial(req.body, req.user?.id);
+      res.status(201).json({
+        testimonial: formatTestimonial(testimonial),
+        message: "Thank you! Your review will appear after moderation.",
+      });
+    } catch (err) {
+      handleError(res, err, "Failed to submit testimonial");
+    }
+  },
+);
 
 router.get("/all", authenticate, requireAdmin, async (req, res) => {
   try {

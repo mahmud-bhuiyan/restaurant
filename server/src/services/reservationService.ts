@@ -2,12 +2,12 @@ import { Reservation, type ReservationDocument } from "../models/Reservation.js"
 import {
   DEFAULT_MAX_COVERS_PER_SLOT,
   DEFAULT_TIME_SLOTS,
-  SiteSettings,
 } from "../models/SiteSettings.js";
 import {
   ReservationStatus,
   type CreateReservationInput,
 } from "../types/reservation.js";
+import { getSiteSettings } from "./settingsService.js";
 
 export class ReservationError extends Error {
   status: number;
@@ -22,14 +22,6 @@ const ACTIVE_STATUSES = [
   ReservationStatus.PENDING,
   ReservationStatus.CONFIRMED,
 ];
-
-export async function getSiteSettings() {
-  let settings = await SiteSettings.findOne();
-  if (!settings) {
-    settings = await SiteSettings.create({});
-  }
-  return settings;
-}
 
 export function formatReservation(reservation: ReservationDocument) {
   return {
