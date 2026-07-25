@@ -11,6 +11,7 @@ import {
   updateOrderStatus,
 } from "../services/orderService.js";
 import { OrderStatus } from "../types/order.js";
+import { getRouteParam } from "../utils/routeParams.js";
 
 const router = Router();
 
@@ -69,7 +70,7 @@ router.get("/", authenticate, requireAdmin, async (req, res) => {
 
 router.get("/:id", authenticate, async (req, res) => {
   try {
-    const order = await getOrderById(req.params.id);
+    const order = await getOrderById(getRouteParam(req.params, "id"));
 
     if (order.userId.toString() !== req.user!.id && req.user!.role !== "ADMIN") {
       res.status(403).json({ message: "Access denied" });
@@ -90,7 +91,7 @@ router.get("/:id", authenticate, async (req, res) => {
 router.patch("/:id/status", authenticate, requireAdmin, async (req, res) => {
   try {
     const { status } = req.body;
-    const order = await updateOrderStatus(req.params.id, status);
+    const order = await updateOrderStatus(getRouteParam(req.params, "id"), status);
     const customerName = await getCustomerName(order.userId.toString());
     res.json({ order: formatOrder(order, customerName) });
   } catch (err) {

@@ -10,6 +10,7 @@ import {
   updateTestimonialStatus,
 } from "../services/testimonialService.js";
 import { TestimonialStatus } from "../types/testimonial.js";
+import { getRouteParam } from "../utils/routeParams.js";
 
 const router = Router();
 
@@ -71,7 +72,7 @@ router.get("/all", authenticate, requireAdmin, async (req, res) => {
 router.patch("/:id/status", authenticate, requireAdmin, async (req, res) => {
   try {
     const testimonial = await updateTestimonialStatus(
-      req.params.id,
+      getRouteParam(req.params, "id"),
       req.body.status,
     );
     res.json({ testimonial: formatTestimonial(testimonial) });
@@ -82,7 +83,7 @@ router.patch("/:id/status", authenticate, requireAdmin, async (req, res) => {
 
 router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
-    await deleteTestimonial(req.params.id);
+    await deleteTestimonial(getRouteParam(req.params, "id"));
     res.json({ message: "Testimonial deleted" });
   } catch (err) {
     handleError(res, err, "Failed to delete testimonial");

@@ -10,6 +10,7 @@ import {
   updateReservationStatus,
 } from "../services/reservationService.js";
 import { ReservationStatus } from "../types/reservation.js";
+import { getRouteParam } from "../utils/routeParams.js";
 
 const router = Router();
 
@@ -85,7 +86,7 @@ router.get("/", authenticate, requireAdmin, async (req, res) => {
 router.patch("/:id/status", authenticate, requireAdmin, async (req, res) => {
   try {
     const reservation = await updateReservationStatus(
-      req.params.id,
+      getRouteParam(req.params, "id"),
       req.body.status,
     );
     res.json({ reservation: formatReservation(reservation) });
