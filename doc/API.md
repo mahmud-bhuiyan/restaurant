@@ -10,6 +10,7 @@
 
 | Topic | Detail |
 |-------|--------|
+| **Version prefix** | All endpoints live under `/api/v1` (see [Versioning](#versioning)) |
 | Content-Type | `application/json` for request bodies |
 | Auth cookie | `token` (httpOnly JWT, 7-day expiry) |
 | Error shape | `{ "message": "..." }` |
@@ -17,9 +18,24 @@
 
 ---
 
+## Versioning
+
+All routes use `/api/v1`. To add v2 later, mount the same (or updated) routes under `/api/v2` in `app.ts` and keep v1 until you are ready to remove it.
+
+**`GET /api` response `200`**
+```json
+{
+  "message": "Epicurean Haven API",
+  "version": "v1",
+  "basePath": "/api/v1"
+}
+```
+
+---
+
 ## Health
 
-### `GET /api/health`
+### `GET /api/v1/health`
 
 Public health check.
 
@@ -27,6 +43,7 @@ Public health check.
 ```json
 {
   "status": "ok",
+  "version": "v1",
   "message": "Epicurean Haven API is running",
   "timestamp": "2026-07-25T09:00:00.000Z"
 }
@@ -36,7 +53,7 @@ Public health check.
 
 ## Authentication
 
-### `POST /api/auth/register`
+### `POST /api/v1/auth/register`
 
 Register a new **customer** account. Admin accounts cannot be created via this route.
 
@@ -78,7 +95,7 @@ Register a new **customer** account. Admin accounts cannot be created via this r
 
 ---
 
-### `POST /api/auth/login`
+### `POST /api/v1/auth/login`
 
 Login for customers and admins.
 
@@ -96,7 +113,7 @@ Login for customers and admins.
 
 ---
 
-### `POST /api/auth/logout`
+### `POST /api/v1/auth/logout`
 
 Clears the auth cookie.
 
@@ -107,7 +124,7 @@ Clears the auth cookie.
 
 ---
 
-### `GET /api/auth/me`
+### `GET /api/v1/auth/me`
 
 Returns the current authenticated user.
 
@@ -122,7 +139,7 @@ Returns the current authenticated user.
 
 ---
 
-### `PATCH /api/auth/profile`
+### `PATCH /api/v1/auth/profile`
 
 Update profile fields for the logged-in user.
 
@@ -145,7 +162,7 @@ Update profile fields for the logged-in user.
 
 ## Menu (Public)
 
-### `GET /api/menu`
+### `GET /api/v1/menu`
 
 Full menu grouped by category.
 
@@ -179,7 +196,7 @@ Full menu grouped by category.
 
 ---
 
-### `GET /api/menu/featured`
+### `GET /api/v1/menu/featured`
 
 Featured items that are currently available (max 6).
 
@@ -198,9 +215,9 @@ All admin menu routes require **auth + ADMIN role**.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/api/menu/categories` | Create category |
-| `PATCH` | `/api/menu/categories/:id` | Update category |
-| `DELETE` | `/api/menu/categories/:id` | Delete (only if empty) |
+| `POST` | `/api/v1/menu/categories` | Create category |
+| `PATCH` | `/api/v1/menu/categories/:id` | Update category |
+| `DELETE` | `/api/v1/menu/categories/:id` | Delete (only if empty) |
 
 **Create body**
 ```json
@@ -213,9 +230,9 @@ All admin menu routes require **auth + ADMIN role**.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/api/menu/items` | Create item |
-| `PATCH` | `/api/menu/items/:id` | Update item |
-| `DELETE` | `/api/menu/items/:id` | Delete item |
+| `POST` | `/api/v1/menu/items` | Create item |
+| `PATCH` | `/api/v1/menu/items/:id` | Update item |
+| `DELETE` | `/api/v1/menu/items/:id` | Delete item |
 
 **Create body**
 ```json
@@ -235,11 +252,191 @@ All admin menu routes require **auth + ADMIN role**.
 
 ---
 
+## Orders
+
+Payment method: **Cash on Delivery** only.
+
+### `POST /api/v1/orders`
+
+Place a new order. **Auth:** required (customer).
+
+**Body**
+```json
+{
+  "orderType": "DELIVERY",
+  "phone": "+1 555 123 4567",
+  "deliveryAddress": "123 Main St",
+  "notes": "Ring the bell",
+  "items": [
+    { "menuItemId": "...", "quantity": 2 }
+  ]
+}
+```
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| orderType | yes | `DELIVERY` or `PICKUP` |
+| phone | yes | |
+| deliveryAddress | for delivery | Required when `orderType` is `DELIVERY` |
+| notes | no | |
+| items | yes | At least one line; items must be available |
+
+**Response `201`**
+```json
+{
+  "order": {
+    "id": "...",
+    "userId": "...",
+    "status": "PENDING",
+    "orderType": "DELIVERY",
+    "deliveryAddress": "123 Main St",
+    "phone": "+1 555 123 4567",
+    "subtotal": 64,
+    "total": 64,
+    "notes": "",
+    "items": [
+      {
+        "menuItemId": "...",
+        "name": "Steak",
+        "quantity": 2,
+        "priceAtOrder": 32,
+        "lineTotal": 64
+      }
+    ],
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+}
+```
+
+**Status flow:** `PENDING` → `CONFIRMED` → `PREPARING` → `OUT_FOR_DELIVERY` → `DELIVERED` · `CANCELLED`
+
+---
+
+### `GET /api/v1/orders/mine`
+
+List orders for the logged-in customer. **Auth:** required.
+
+**Response `200`** — `{ "orders": [ "...Order..." ] }`
+
+---
+
+### `GET /api/v1/orders`
+
+List all orders (newest first). **Auth:** admin.
+
+**Query:** `?status=PENDING` (optional filter)
+
+**Response `200`** — `{ "orders": [ "...Order with customerName..." ] }`
+
+---
+
+### `GET /api/v1/orders/:id`
+
+Single order. **Auth:** order owner or admin.
+
+**Response `200`** — `{ "order": { ... } }`
+
+---
+
+### `PATCH /api/v1/orders/:id/status`
+
+Update order status. **Auth:** admin.
+
+**Body**
+```json
+{ "status": "CONFIRMED" }
+```
+
+**Response `200`** — `{ "order": { ... } }`
+
+---
+
+## Reservations
+
+Guest-friendly — no login required (logged-in users get reservations linked to their account).
+
+Capacity is enforced per time slot using `maxCoversPerSlot` from Site Settings (default 24).
+
+### `GET /api/v1/reservations/availability?date=YYYY-MM-DD`
+
+Public slot availability for a date.
+
+**Response `200`**
+```json
+{
+  "date": "2026-07-26",
+  "maxCoversPerSlot": 24,
+  "slots": [
+    {
+      "time": "18:00",
+      "bookedCovers": 4,
+      "remainingCovers": 20,
+      "available": true
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/v1/reservations`
+
+Create a reservation. **Auth:** optional (links `userId` when logged in).
+
+**Body**
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "phone": "+1 555 123 4567",
+  "date": "2026-07-26",
+  "time": "18:00",
+  "partySize": 4,
+  "notes": "Anniversary dinner"
+}
+```
+
+**Response `201`** — `{ "reservation": { ... } }` with status `PENDING`
+
+**Errors:** `400` validation · `409` slot full · `500`
+
+---
+
+### `GET /api/v1/reservations/mine`
+
+List reservations for the logged-in user. **Auth:** required.
+
+**Response `200`** — `{ "reservations": [ ... ] }`
+
+---
+
+### `GET /api/v1/reservations`
+
+List all reservations. **Auth:** admin.
+
+**Query:** `?date=YYYY-MM-DD` · `?status=PENDING`
+
+---
+
+### `PATCH /api/v1/reservations/:id/status`
+
+Update reservation status. **Auth:** admin.
+
+**Body**
+```json
+{ "status": "CONFIRMED" }
+```
+
+Statuses: `PENDING` · `CONFIRMED` · `CANCELLED`
+
+---
+
 ## Seed Scripts
 
 ```bash
 cd server
-npm run seed:admin   # admin@epicureanhaven.com / Admin123!
+npm run seed:admin   # admin@gmail.com / User@123
 npm run seed:menu    # sample categories & dishes
 ```
 
@@ -249,9 +446,11 @@ npm run seed:menu    # sample categories & dishes
 
 | Module | Endpoints added |
 |--------|-----------------|
-| 1 | `GET /api/health` |
-| 3 | `/api/auth/*` |
-| 4 | `/api/menu/*` |
+| 1 | `GET /api/v1/health` |
+| 3 | `/api/v1/auth/*` |
+| 4 | `/api/v1/menu/*` |
+| 5 | `/api/v1/orders/*` |
+| 6 | `/api/v1/reservations/*` |
 
 ---
 
@@ -263,6 +462,8 @@ User/auth tests cover all endpoints in this document:
 |-------|----------|-------|
 | Auth service (unit) | `server/tests/users/auth.service.test.ts` | 12 |
 | Auth routes (integration) | `server/tests/users/auth.routes.test.ts` | 10 |
+| Order routes (integration) | `server/tests/users/orders.routes.test.ts` | 5 |
+| Reservation routes (integration) | `server/tests/users/reservations.routes.test.ts` | 5 |
 | API client | `client/tests/users/authApi.test.ts` | 3 |
 | AuthContext | `client/tests/users/authContext.test.tsx` | 3 |
 | Env helper | `client/tests/users/env.test.ts` | 3 |

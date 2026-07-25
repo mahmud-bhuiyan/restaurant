@@ -4,6 +4,8 @@ import express, { type Express } from "express";
 import { env } from "./config/env.js";
 import authRoutes from "./routes/auth.js";
 import menuRoutes from "./routes/menu.js";
+import orderRoutes from "./routes/orders.js";
+import reservationRoutes from "./routes/reservations.js";
 
 export function createApp(): Express {
   const app = express();
@@ -12,16 +14,18 @@ export function createApp(): Express {
   app.use(express.json());
   app.use(cookieParser());
 
-  app.get("/api/health", (_req, res) => {
-    res.json({
-      status: "ok",
-      message: "Epicurean Haven API is running",
-      timestamp: new Date().toISOString(),
-    });
+  app.get("/", (_req, res) => {
+    res.type("text").send("Server is running");
   });
 
-  app.use("/api/auth", authRoutes);
-  app.use("/api/menu", menuRoutes);
+  app.get("/api/health", (_req, res) => {
+    res.type("text").send("Health check passed");
+  });
+
+  app.use("/api/v1/auth", authRoutes);
+  app.use("/api/v1/menu", menuRoutes);
+  app.use("/api/v1/orders", orderRoutes);
+  app.use("/api/v1/reservations", reservationRoutes);
 
   return app;
 }

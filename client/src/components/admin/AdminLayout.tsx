@@ -4,6 +4,8 @@ import { cn } from "../../lib/cn";
 const links = [
   { label: "Dashboard", href: "/admin" },
   { label: "Menu", href: "/admin/menu" },
+  { label: "Orders", href: "/admin/orders" },
+  { label: "Reservations", href: "/admin/reservations" },
 ];
 
 export default function AdminLayout() {

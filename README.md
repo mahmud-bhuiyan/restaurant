@@ -84,7 +84,7 @@ Full reference: [doc/API.md](./doc/API.md) — update this file whenever routes 
 ## Seed data
 
 ```bash
-cd server && npm run seed:admin   # admin@epicureanhaven.com / Admin123!
+cd server && npm run seed:admin   # admin@gmail.com / User@123
 cd server && npm run seed:menu      # sample categories & dishes
 ```
 

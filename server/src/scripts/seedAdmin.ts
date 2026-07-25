@@ -13,8 +13,18 @@ async function seedAdmin() {
   await connectDB(env.mongodbUri);
 
   const existing = await User.findOne({ email: env.adminEmail });
+
   if (existing) {
-    console.log(`Admin already exists: ${env.adminEmail}`);
+    if (existing.role !== UserRole.ADMIN) {
+      console.error(`${env.adminEmail} exists but is not an admin account`);
+      process.exit(1);
+    }
+
+    existing.name = env.adminName;
+    existing.passwordHash = await bcrypt.hash(env.adminPassword, 12);
+    await existing.save();
+
+    console.log(`Admin updated: ${env.adminEmail}`);
     process.exit(0);
   }
 
@@ -28,7 +38,6 @@ async function seedAdmin() {
   });
 
   console.log(`Admin user created: ${env.adminEmail}`);
-  console.log("Change the password after first login in production.");
   process.exit(0);
 }
 

@@ -7,6 +7,7 @@ import { UserRole } from "../../src/types/user.js";
 import "../setup/db.js";
 
 const app = createApp();
+const AUTH = "/api/v1/auth";
 
 async function createAdmin() {
   const passwordHash = await bcrypt.hash("Admin123!", 12);
@@ -18,10 +19,10 @@ async function createAdmin() {
   });
 }
 
-describe("POST /api/auth/register", () => {
+describe(`POST ${AUTH}/register`, () => {
   it("registers a customer and sets cookie", async () => {
     const res = await request(app)
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({
         name: "Jane Doe",
         email: "jane@routes.com",
@@ -36,7 +37,7 @@ describe("POST /api/auth/register", () => {
 
   it("returns 400 when fields missing", async () => {
     const res = await request(app)
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ email: "a@b.com" });
 
     expect(res.status).toBe(400);
@@ -45,25 +46,25 @@ describe("POST /api/auth/register", () => {
 
   it("returns 409 for duplicate email", async () => {
     await request(app)
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "A", email: "dup@routes.com", password: "secret12" });
 
     const res = await request(app)
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "B", email: "dup@routes.com", password: "secret12" });
 
     expect(res.status).toBe(409);
   });
 });
 
-describe("POST /api/auth/login", () => {
+describe(`POST ${AUTH}/login`, () => {
   it("logs in with valid credentials", async () => {
     await request(app)
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "Login", email: "login@routes.com", password: "secret12" });
 
     const res = await request(app)
-      .post("/api/auth/login")
+      .post(`${AUTH}/login`)
       .send({ email: "login@routes.com", password: "secret12" });
 
     expect(res.status).toBe(200);
@@ -72,11 +73,11 @@ describe("POST /api/auth/login", () => {
 
   it("returns 401 for wrong password", async () => {
     await request(app)
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "Login", email: "bad@routes.com", password: "secret12" });
 
     const res = await request(app)
-      .post("/api/auth/login")
+      .post(`${AUTH}/login`)
       .send({ email: "bad@routes.com", password: "wrongpass" });
 
     expect(res.status).toBe(401);
@@ -86,7 +87,7 @@ describe("POST /api/auth/login", () => {
     await createAdmin();
 
     const res = await request(app)
-      .post("/api/auth/login")
+      .post(`${AUTH}/login`)
       .send({ email: "admin@test.com", password: "Admin123!" });
 
     expect(res.status).toBe(200);
@@ -94,36 +95,36 @@ describe("POST /api/auth/login", () => {
   });
 });
 
-describe("GET /api/auth/me", () => {
+describe(`GET ${AUTH}/me`, () => {
   it("returns user when authenticated", async () => {
     const agent = request.agent(app);
 
     await agent
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "Me Test", email: "me@routes.com", password: "secret12" });
 
-    const res = await agent.get("/api/auth/me");
+    const res = await agent.get(`${AUTH}/me`);
 
     expect(res.status).toBe(200);
     expect(res.body.user.email).toBe("me@routes.com");
   });
 
   it("returns 401 when not authenticated", async () => {
-    const res = await request(app).get("/api/auth/me");
+    const res = await request(app).get(`${AUTH}/me`);
     expect(res.status).toBe(401);
   });
 });
 
-describe("PATCH /api/auth/profile", () => {
+describe(`PATCH ${AUTH}/profile`, () => {
   it("updates profile for authenticated user", async () => {
     const agent = request.agent(app);
 
     await agent
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "Profile", email: "prof@routes.com", password: "secret12" });
 
     const res = await agent
-      .patch("/api/auth/profile")
+      .patch(`${AUTH}/profile`)
       .send({ name: "New Name", phone: "555-1234" });
 
     expect(res.status).toBe(200);
@@ -132,17 +133,17 @@ describe("PATCH /api/auth/profile", () => {
   });
 });
 
-describe("POST /api/auth/logout", () => {
+describe(`POST ${AUTH}/logout`, () => {
   it("clears session", async () => {
     const agent = request.agent(app);
 
     await agent
-      .post("/api/auth/register")
+      .post(`${AUTH}/register`)
       .send({ name: "Logout", email: "out@routes.com", password: "secret12" });
 
-    await agent.post("/api/auth/logout");
+    await agent.post(`${AUTH}/logout`);
 
-    const res = await agent.get("/api/auth/me");
+    const res = await agent.get(`${AUTH}/me`);
     expect(res.status).toBe(401);
   });
 });

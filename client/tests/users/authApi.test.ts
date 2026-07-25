@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { api, ApiError } from "../../src/lib/api";
+import { getApiBaseUrl } from "../../src/lib/env";
 
 describe("ApiError", () => {
   it("stores message and status", () => {
@@ -45,7 +46,7 @@ describe("auth API client", () => {
 
     expect(result.user.email).toBe("jane@test.com");
     expect(fetch).toHaveBeenCalledWith(
-      "/api/auth/register",
+      `${getApiBaseUrl()}/auth/register`,
       expect.objectContaining({
         method: "POST",
         credentials: "include",
