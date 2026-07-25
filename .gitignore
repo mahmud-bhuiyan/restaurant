@@ -1,0 +1,4 @@
+# Root — no package.json or node_modules; apps live in client/ and server/
+.env
+.env.local
+node_modules

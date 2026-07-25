@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-charcoal font-body text-gray-200 antialiased;
+  }
+
+  ::selection {
+    @apply bg-gold/30 text-white;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply px-6 py-20 md:px-8 md:py-28;
+  }
+
+  .section-heading {
+    @apply font-display text-3xl font-semibold text-white md:text-4xl;
+  }
+
+  .section-subheading {
+    @apply mt-3 max-w-2xl text-gray-400;
+  }
+
+  .gold-divider {
+    @apply mx-auto mt-4 h-px w-16 bg-gold;
+  }
+}
