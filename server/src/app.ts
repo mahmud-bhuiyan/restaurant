@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Express } from "express";
+import { connectDB } from "./config/db.js";
 import { env } from "./config/env.js";
 import authRoutes from "./routes/auth.js";
 import menuRoutes from "./routes/menu.js";
@@ -8,8 +9,22 @@ import orderRoutes from "./routes/orders.js";
 import reservationRoutes from "./routes/reservations.js";
 import testimonialRoutes from "./routes/testimonials.js";
 
+let dbReady = false;
+
 export function createApp(): Express {
   const app = express();
+
+  app.use(async (_req, _res, next) => {
+    if (env.mongodbUri && !dbReady) {
+      try {
+        await connectDB(env.mongodbUri);
+        dbReady = true;
+      } catch (err) {
+        console.warn("MongoDB connection failed — API will run without DB:", err);
+      }
+    }
+    next();
+  });
 
   app.use(cors({ origin: env.clientUrl, credentials: true }));
   app.use(express.json());
@@ -31,3 +46,6 @@ export function createApp(): Express {
 
   return app;
 }
+
+const app = createApp();
+export default app;
