@@ -105,5 +105,6 @@ export const navLinks = [
   { label: "About", href: "/about" },
   { label: "Gallery", href: "/gallery" },
   { label: "Reserve", href: "/reservations" },
+  { label: "Reviews", href: "/testimonials" },
   { label: "Contact", href: "/contact" },
 ];

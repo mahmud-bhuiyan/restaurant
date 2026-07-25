@@ -69,8 +69,8 @@ restaurant/
 | 4 | Menu Module | **Done** |
 | 5 | Ordering & Cart | **Done** |
 | 6 | Reservations | **Done** |
-| 7 | Testimonials | **Next** |
-| 8 | Gallery & Content Pages | Pending |
+| 7 | Testimonials | **Done** |
+| 8 | Gallery & Content Pages | **Next** |
 | 9 | Admin Panel Shell | Pending |
 | 10 | Polish, SEO & Launch | Pending |
 
@@ -182,11 +182,11 @@ cd server && npm run seed:menu
 
 ---
 
-## Module 7 — Testimonials
+## Module 7 — Testimonials ✅ (complete)
 
-- Guest submission form with star rating
-- Public wall shows APPROVED only
-- Admin moderation queue
+- [x] Guest submission form with 1–5 star rating at `/testimonials`
+- [x] Public wall + homepage preview show APPROVED only
+- [x] Admin `/admin/testimonials` — approve, reject, delete
 
 ---
 

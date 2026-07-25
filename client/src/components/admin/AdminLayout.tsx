@@ -6,6 +6,7 @@ const links = [
   { label: "Menu", href: "/admin/menu" },
   { label: "Orders", href: "/admin/orders" },
   { label: "Reservations", href: "/admin/reservations" },
+  { label: "Testimonials", href: "/admin/testimonials" },
 ];
 
 export default function AdminLayout() {

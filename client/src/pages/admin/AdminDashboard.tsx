@@ -19,7 +19,7 @@ export default function AdminDashboard() {
           { label: "Menu", desc: "Categories & dishes", href: "/admin/menu" },
           { label: "Orders", desc: "Manage & update status", href: "/admin/orders" },
           { label: "Reservations", desc: "Table bookings", href: "/admin/reservations" },
-          { label: "Testimonials", desc: "Module 7", href: "#" },
+          { label: "Testimonials", desc: "Review moderation", href: "/admin/testimonials" },
         ].map((card) => (
           card.href === "#" ? (
             <div

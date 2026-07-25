@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.js";
 import menuRoutes from "./routes/menu.js";
 import orderRoutes from "./routes/orders.js";
 import reservationRoutes from "./routes/reservations.js";
+import testimonialRoutes from "./routes/testimonials.js";
 
 export function createApp(): Express {
   const app = express();
@@ -26,6 +27,7 @@ export function createApp(): Express {
   app.use("/api/v1/menu", menuRoutes);
   app.use("/api/v1/orders", orderRoutes);
   app.use("/api/v1/reservations", reservationRoutes);
+  app.use("/api/v1/testimonials", testimonialRoutes);
 
   return app;
 }

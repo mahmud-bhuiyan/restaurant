@@ -10,6 +10,7 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import ReservationPage from "./pages/ReservationPage";
 import SignupPage from "./pages/SignupPage";
+import TestimonialsPage from "./pages/TestimonialsPage";
 
 export default function App() {
   return (
@@ -79,15 +80,7 @@ export default function App() {
             />
           }
         />
-        <Route
-          path="/testimonials"
-          element={
-            <PlaceholderPage
-              title="Testimonials"
-              description="Guest reviews and submission form will be built in Module 7."
-            />
-          }
-        />
+        <Route path="/testimonials" element={<TestimonialsPage />} />
       </Routes>
     </BrowserRouter>
   );

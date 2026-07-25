@@ -4,6 +4,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import AdminMenuPage from "./admin/AdminMenuPage";
 import AdminOrdersPage from "./admin/AdminOrdersPage";
 import AdminReservationsPage from "./admin/AdminReservationsPage";
+import AdminTestimonialsPage from "./admin/AdminTestimonialsPage";
 
 export default function AdminPage() {
   return (
@@ -13,6 +14,7 @@ export default function AdminPage() {
         <Route path="menu" element={<AdminMenuPage />} />
         <Route path="orders" element={<AdminOrdersPage />} />
         <Route path="reservations" element={<AdminReservationsPage />} />
+        <Route path="testimonials" element={<AdminTestimonialsPage />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
     </Routes>
